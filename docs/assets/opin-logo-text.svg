@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="200" viewBox="0 0 800 200">
+  <rect width="100%" height="100%" fill="#ffffff"/>
+  <g>
+    <rect x="0" y="0" width="200" height="200" rx="24" fill="#BFFF00"/>
+    <text x="100" y="120" font-family="Inter, Arial, sans-serif" font-weight="800" font-size="96" fill="#042400" text-anchor="middle">OP</text>
+  </g>
+  <text x="360" y="130" font-family="Inter, Arial, sans-serif" font-weight="700" font-size="68" fill="#042400">Opin</text>
+  <text x="360" y="170" font-family="Inter, Arial, sans-serif" font-weight="400" font-size="20" fill="#4b4b4b">Personal AI assistant</text>
+</svg>

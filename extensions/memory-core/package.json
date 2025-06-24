@@ -1,0 +1,18 @@
+{
+  "name": "@opin-cli/memory-core",
+  "version": "2026.4.6",
+  "private": true,
+  "description": "Opin core memory search plugin",
+  "type": "module",
+  "devDependencies": {
+    "opin": "workspace:opincore@*"
+  },
+  "peerDependencies": {
+    "opin": ">=2026.1.26"
+  },
+  "opin": {
+    "extensions": [
+      "./index.ts"
+    ]
+  }
+}

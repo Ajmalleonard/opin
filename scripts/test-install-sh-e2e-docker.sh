@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+IMAGE_NAME="${OPIN_INSTALL_E2E_IMAGE:-${OPIN_INSTALL_E2E_IMAGE:-opin-install-e2e:local}}"
+INSTALL_URL="${OPIN_INSTALL_URL:-${OPIN_INSTALL_URL:-https://opin.bot/install.sh}}"
+
+OPENAI_API_KEY="${OPENAI_API_KEY:-}"
+ANTHROPIC_API_KEY="${ANTHROPIC_API_KEY:-}"
+ANTHROPIC_API_TOKEN="${ANTHROPIC_API_TOKEN:-}"
+OPIN_E2E_MODELS="${OPIN_E2E_MODELS:-${OPIN_E2E_MODELS:-}}"
+
+echo "==> Build image: $IMAGE_NAME"
+docker build \
+  -t "$IMAGE_NAME" \
+  -f "$ROOT_DIR/scripts/docker/install-sh-e2e/Dockerfile" \
+  "$ROOT_DIR/scripts/docker/install-sh-e2e"
+
+echo "==> Run E2E installer test"
+docker run --rm \
+  -e OPIN_INSTALL_URL="$INSTALL_URL" \
+  -e OPIN_INSTALL_TAG="${OPIN_INSTALL_TAG:-${OPIN_INSTALL_TAG:-latest}}" \
+  -e OPIN_E2E_MODELS="$OPIN_E2E_MODELS" \
+  -e OPIN_INSTALL_E2E_PREVIOUS="${OPIN_INSTALL_E2E_PREVIOUS:-${OPIN_INSTALL_E2E_PREVIOUS:-}}" \
+  -e OPIN_INSTALL_E2E_SKIP_PREVIOUS="${OPIN_INSTALL_E2E_SKIP_PREVIOUS:-${OPIN_INSTALL_E2E_SKIP_PREVIOUS:-0}}" \
+  -e OPENAI_API_KEY="$OPENAI_API_KEY" \
+  -e ANTHROPIC_API_KEY="$ANTHROPIC_API_KEY" \
+  -e ANTHROPIC_API_TOKEN="$ANTHROPIC_API_TOKEN" \
+  "$IMAGE_NAME"

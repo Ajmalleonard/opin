@@ -1,0 +1,14 @@
+{
+  "name": "@opin-cli/discord",
+  "version": "2026.4.6",
+  "description": "Opin Discord channel plugin",
+  "type": "module",
+  "devDependencies": {
+    "opin": "workspace:opincore@*"
+  },
+  "opin": {
+    "extensions": [
+      "./index.ts"
+    ]
+  }
+}
