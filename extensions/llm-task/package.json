@@ -1,0 +1,15 @@
+{
+  "name": "@opin-cli/llm-task",
+  "version": "2026.4.6",
+  "private": true,
+  "description": "Opin JSON-only LLM task plugin",
+  "type": "module",
+  "devDependencies": {
+    "opin": "workspace:opincore@*"
+  },
+  "opin": {
+    "extensions": [
+      "./index.ts"
+    ]
+  }
+}

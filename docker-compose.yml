@@ -1,0 +1,46 @@
+services:
+  opin-gateway:
+    image: ${OPIN_IMAGE:-${OPIN_IMAGE:-opin:local}}
+    environment:
+      HOME: /home/node
+      TERM: xterm-256color
+      OPIN_GATEWAY_TOKEN: ${OPIN_GATEWAY_TOKEN:-${OPIN_GATEWAY_TOKEN:-}}
+      CLAUDE_AI_SESSION_KEY: ${CLAUDE_AI_SESSION_KEY}
+      CLAUDE_WEB_SESSION_KEY: ${CLAUDE_WEB_SESSION_KEY}
+      CLAUDE_WEB_COOKIE: ${CLAUDE_WEB_COOKIE}
+    volumes:
+      - ${OPIN_CONFIG_DIR:-${OPIN_CONFIG_DIR:-${HOME}/.opin}}:/home/node/.opin
+      - ${OPIN_WORKSPACE_DIR:-${OPIN_WORKSPACE_DIR:-${HOME}/.opin/workspace}}:/home/node/.opin/workspace
+    ports:
+      - "${OPIN_GATEWAY_PORT:-${OPIN_GATEWAY_PORT:-18789}}:18789"
+      - "${OPIN_BRIDGE_PORT:-${OPIN_BRIDGE_PORT:-18790}}:18790"
+    init: true
+    restart: unless-stopped
+    command:
+      [
+        "node",
+        "dist/index.js",
+        "gateway",
+        "--bind",
+        "${OPIN_GATEWAY_BIND:-${OPIN_GATEWAY_BIND:-lan}}",
+        "--port",
+        "18789",
+      ]
+
+  opin-cli:
+    image: ${OPIN_IMAGE:-${OPIN_IMAGE:-opin:local}}
+    environment:
+      HOME: /home/node
+      TERM: xterm-256color
+      OPIN_GATEWAY_TOKEN: ${OPIN_GATEWAY_TOKEN:-${OPIN_GATEWAY_TOKEN:-}}
+      BROWSER: echo
+      CLAUDE_AI_SESSION_KEY: ${CLAUDE_AI_SESSION_KEY}
+      CLAUDE_WEB_SESSION_KEY: ${CLAUDE_WEB_SESSION_KEY}
+      CLAUDE_WEB_COOKIE: ${CLAUDE_WEB_COOKIE}
+    volumes:
+      - ${OPIN_CONFIG_DIR:-${OPIN_CONFIG_DIR:-${HOME}/.opin}}:/home/node/.opin
+      - ${OPIN_WORKSPACE_DIR:-${OPIN_WORKSPACE_DIR:-${HOME}/.opin/workspace}}:/home/node/.opin/workspace
+    stdin_open: true
+    tty: true
+    init: true
+    entrypoint: ["node", "dist/index.js"]

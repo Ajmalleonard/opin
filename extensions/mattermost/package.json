@@ -1,0 +1,29 @@
+{
+  "name": "@opin-cli/mattermost",
+  "version": "2026.4.6",
+  "private": true,
+  "description": "Opin Mattermost channel plugin",
+  "type": "module",
+  "devDependencies": {
+    "opin": "workspace:opincore@*"
+  },
+  "opin": {
+    "extensions": [
+      "./index.ts"
+    ],
+    "channel": {
+      "id": "mattermost",
+      "label": "Mattermost",
+      "selectionLabel": "Mattermost (plugin)",
+      "docsPath": "/channels/mattermost",
+      "docsLabel": "mattermost",
+      "blurb": "self-hosted Slack-style chat; install the plugin to enable.",
+      "order": 65
+    },
+    "install": {
+      "npmSpec": "@opin/mattermost",
+      "localPath": "extensions/mattermost",
+      "defaultChoice": "npm"
+    }
+  }
+}

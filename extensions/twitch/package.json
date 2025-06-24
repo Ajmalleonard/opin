@@ -1,0 +1,21 @@
+{
+  "name": "@opin-cli/twitch",
+  "version": "2026.4.6",
+  "private": true,
+  "description": "Opin Twitch channel plugin",
+  "type": "module",
+  "dependencies": {
+    "@twurple/api": "^8.0.3",
+    "@twurple/auth": "^8.0.3",
+    "@twurple/chat": "^8.0.3",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "opin": "workspace:opincore@*"
+  },
+  "opin": {
+    "extensions": [
+      "./index.ts"
+    ]
+  }
+}

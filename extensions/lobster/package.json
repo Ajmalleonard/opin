@@ -1,0 +1,14 @@
+{
+  "name": "@opin-cli/lobster",
+  "version": "2026.4.6",
+  "description": "Lobster workflow tool plugin (typed pipelines + resumable approvals)",
+  "type": "module",
+  "devDependencies": {
+    "opin": "workspace:opincore@*"
+  },
+  "opin": {
+    "extensions": [
+      "./index.ts"
+    ]
+  }
+}
