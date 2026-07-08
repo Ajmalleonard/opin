@@ -22,10 +22,10 @@
   background: transparent;
 }
 
-/* Chat mode: icon-rail + session-panel + main */
+/* Chat mode: nav sidebar + main content */
 .shell--chat {
-  grid-template-columns: var(--shell-icon-rail-width) var(--shell-nav-width) minmax(0, 1fr);
-  grid-template-areas: "rail nav content";
+  grid-template-columns: var(--shell-nav-width) minmax(0, 1fr);
+  grid-template-areas: "nav content";
 }
 
 .shell::before {
@@ -46,11 +46,11 @@
 
 /* Chat with session panel hidden */
 .shell--chat.shell--nav-collapsed {
-  grid-template-columns: var(--shell-icon-rail-width) 0px minmax(0, 1fr);
+  grid-template-columns: 0px minmax(0, 1fr);
 }
 
 .shell--chat-focus {
-  grid-template-columns: var(--shell-icon-rail-width) 0px minmax(0, 1fr);
+  grid-template-columns: 0px minmax(0, 1fr);
 }
 
 /* Non-chat collapsed */

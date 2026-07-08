@@ -119,40 +119,7 @@ export function renderApp(state: AppViewState) {
   return html`
     <div class="shell ${isChat ? "shell--chat" : ""} ${chatFocus ? "shell--chat-focus" : ""} ${state.settings.navCollapsed ? "shell--nav-collapsed" : ""} ${state.onboarding ? "shell--onboarding" : ""}">
   
-      <!-- Icon rail: always visible in chat mode, one icon per group -->
-      <nav class="nav-rail" aria-label="Section navigation">
-        <div class="nav-rail__logo">
-          <img src=${basePath ? `${basePath}/Dashlogo.v3.svg` : "/Dashlogo.v3.svg"} alt="Opin" />
-        </div>
-        ${TAB_GROUPS.map((group) => {
-          const firstTab = group.tabs[0] as Tab;
-          const isGroupActive = group.tabs.some((tab) => tab === state.tab);
-          return html`
-            <button
-              class="nav-rail__icon ${isGroupActive ? "active" : ""}"
-              title=${group.label}
-              @click=${() => {
-                // Toggle session panel if already active group; otherwise switch to first tab
-                if (isGroupActive && isChat) {
-                  state.applySettings({
-                    ...state.settings,
-                    navCollapsed: !state.settings.navCollapsed,
-                  });
-                } else {
-                  state.applySettings({ ...state.settings, navCollapsed: false });
-                  state.setTab(firstTab);
-                }
-              }}
-            >
-              ${icons[iconForTab(firstTab)]}
-            </button>
-          `;
-        })}
-        <div class="nav-rail__spacer"></div>
-        <div class="nav-rail__icon ${state.connected ? "ok-dot" : "err-dot"}" title="Gateway ${state.connected ? "Online" : "Offline"}" style="cursor:default">
-          <span class="statusDot ${state.connected ? "ok" : ""}"></span>
-        </div>
-      </nav>
+
 
       <aside class="nav ${state.settings.navCollapsed ? "nav--collapsed" : ""}">
           <div class="topbar-left">
