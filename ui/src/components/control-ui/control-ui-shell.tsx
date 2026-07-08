@@ -1,36 +1,15 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { Button, Card, Input, Separator, Tabs, TextArea } from "@heroui/react";
+import { Button, Card, Input, Separator, TextArea } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import type { SessionsUsageEntry } from "../../ui/types";
 import { extractText, extractThinking } from "../../ui/chat/message-extract";
 import { normalizeMessage, normalizeRoleForGrouping } from "../../ui/chat/message-normalizer";
-import {
-  formatDurationHuman,
-  formatList,
-  formatMs,
-  formatRelativeTimestamp,
-  toNumber,
-} from "../../ui/format";
+import { formatDurationHuman, formatList, formatRelativeTimestamp } from "../../ui/format";
 import { pathForTab, subtitleForTab, titleForTab, type Tab } from "../../ui/navigation";
 import { useControlUiStore } from "./control-ui-provider";
 import { Markdown } from "./markdown";
-
-const TABS: Tab[] = [
-  "chat",
-  "overview",
-  "channels",
-  "instances",
-  "sessions",
-  "usage",
-  "cron",
-  "skills",
-  "nodes",
-  "config",
-  "debug",
-  "logs",
-];
 
 function formatJson(value: unknown) {
   try {
@@ -98,54 +77,6 @@ function JsonBlock({ value }: { value: unknown }) {
     <pre className="max-h-[32rem] overflow-auto rounded-2xl border border-white/10 bg-black/35 p-4 text-xs leading-6 text-white/80">
       {formatJson(value)}
     </pre>
-  );
-}
-
-function SessionKeyBadge({ value }: { value: string }) {
-  return (
-    <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-white/75">
-      {value}
-    </span>
-  );
-}
-
-function MessageCard({ message }: { message: unknown }) {
-  const normalized = normalizeMessage(message);
-  const text = extractText(message);
-  const thinking = extractThinking(message);
-  const role = normalizeRoleForGrouping(normalized.role);
-  const time = new Date(normalized.timestamp).toLocaleString();
-  const isAssistant = role === "assistant";
-  const content = text?.trim();
-
-  return (
-    <Card
-      variant="secondary"
-      className={`border ${isAssistant ? "border-cyan-400/20 bg-cyan-400/5" : "border-white/10 bg-white/5"} shadow-none`}
-    >
-      <Card.Header className="flex-row items-center justify-between gap-4">
-        <div>
-          <Card.Title className="capitalize">{role}</Card.Title>
-          <Card.Description>{time}</Card.Description>
-        </div>
-        <span className="rounded-full border border-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-white/50">
-          {normalized.content.length} blocks
-        </span>
-      </Card.Header>
-      <Card.Content className="space-y-3">
-        {content ? <Markdown content={content} className="prose prose-invert max-w-none" /> : null}
-        {!content ? <JsonBlock value={normalized.content} /> : null}
-        {thinking ? (
-          <details className="rounded-2xl border border-white/10 bg-black/20 p-3 text-sm text-white/70">
-            <summary className="cursor-pointer text-white/80">Thinking</summary>
-            <Markdown
-              content={thinking}
-              className="prose prose-invert mt-3 max-w-none opacity-80"
-            />
-          </details>
-        ) : null}
-      </Card.Content>
-    </Card>
   );
 }
 

@@ -47,7 +47,6 @@ import {
   runUpdate,
   saveConfig,
   updateConfigFormValue,
-  removeConfigFormValue,
   type ConfigState,
 } from "../../ui/controllers/config";
 import {
@@ -91,11 +90,9 @@ import {
   loadSessionTimeSeries,
   type UsageState,
 } from "../../ui/controllers/usage";
-import { formatMs } from "../../ui/format";
 import { GatewayBrowserClient as BrowserGatewayClient } from "../../ui/gateway";
-import { normalizeBasePath, pathForTab, type Tab as NavTab } from "../../ui/navigation";
+import { normalizeBasePath, type Tab as NavTab } from "../../ui/navigation";
 import { saveSettings } from "../../ui/storage";
-import { generateUUID } from "../../ui/uuid";
 
 type EventEntry = {
   ts: number;
