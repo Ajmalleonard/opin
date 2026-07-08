@@ -1,0 +1,81 @@
+@import "tailwindcss";
+@import "@heroui/styles";
+@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/preset.css";
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    --control-bg: #070b14;
+    --control-bg-soft: rgba(13, 20, 34, 0.9);
+    --control-border: rgba(255, 255, 255, 0.08);
+  }
+
+  html {
+    background: #000000;
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: transparent;
+    color: rgb(248 250 252);
+    font-feature-settings:
+      "ss01" 1,
+      "ss02" 1;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  ::selection {
+    background: rgba(34, 211, 238, 0.35);
+    color: white;
+  }
+}
+
+@layer components {
+  .control-markdown {
+    color: rgb(226 232 240);
+    line-height: 1.75;
+  }
+
+  .control-markdown > :first-child {
+    margin-top: 0;
+  }
+
+  .control-markdown > :last-child {
+    margin-bottom: 0;
+  }
+
+  .control-markdown a {
+    color: rgb(125 211 252);
+    text-decoration: underline;
+    text-decoration-color: rgba(125, 211, 252, 0.35);
+    text-underline-offset: 2px;
+  }
+
+  .control-markdown code {
+    border-radius: 0.5rem;
+    background: rgba(15, 23, 42, 0.75);
+    padding: 0.1rem 0.35rem;
+    font-size: 0.95em;
+  }
+
+  .control-markdown pre {
+    overflow: auto;
+    border-radius: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(2, 6, 23, 0.8);
+    padding: 1rem;
+  }
+
+  .control-markdown blockquote {
+    border-left: 3px solid rgba(103, 232, 249, 0.35);
+    margin-left: 0;
+    padding-left: 1rem;
+    color: rgba(226, 232, 240, 0.88);
+  }
+}
