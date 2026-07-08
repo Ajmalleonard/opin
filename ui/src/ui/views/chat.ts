@@ -360,7 +360,7 @@ export function renderChat(props: ChatProps) {
   `;
 
   return html`
-    <section class="card chat">
+    <section class="chat">
       ${props.disabledReason ? html`<div class="callout">${props.disabledReason}</div>` : nothing}
 
       ${props.error ? html`<div class="callout danger">${props.error}</div>` : nothing}
@@ -388,9 +388,22 @@ export function renderChat(props: ChatProps) {
               <div class="chat-session-list__eyebrow">Start chat</div>
               <div class="chat-session-list__title">${truncateSessionName(activeSessionDisplayName)}</div>
             </div>
-            <button class="btn btn--sm" type="button" @click=${props.onNewSession}>
-              New session
-            </button>
+            <div class="chat-session-list__actions">
+              <button
+                class="btn btn--icon"
+                type="button"
+                @click=${props.onToggleFocusMode}
+                title="Toggle focus mode (hide sidebar)"
+                aria-label="Toggle focus mode"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 7V4h3"/><path d="M20 7V4h-3"/><path d="M4 17v3h3"/><path d="M20 17v3h-3"/>
+                </svg>
+              </button>
+              <button class="btn btn--sm" type="button" @click=${props.onNewSession}>
+                New session
+              </button>
+            </div>
           </div>
           <div class="chat-session-list__items">
             ${sessionRows.map((row) => {
@@ -418,6 +431,110 @@ export function renderChat(props: ChatProps) {
               style="flex: ${sidebarOpen ? `0 0 ${splitRatio * 100}%` : "1 1 100%"}"
             >
               ${thread}
+
+              <div class="chat-compose">
+                ${renderAttachmentPreview(props)}
+                <div class="chat-compose__row">
+                  <input
+                    type="file"
+                    id="chat-file-input"
+                    accept="image/*"
+                    multiple
+                    style="display: none;"
+                    @change=${(e: Event) => {
+                      const target = e.target as HTMLInputElement;
+                      const files = target.files;
+                      if (!files || !props.onAttachmentsChange) return;
+                      const current = props.attachments ?? [];
+                      const promises = Array.from(files).map((file) => {
+                        return new Promise<ChatAttachment>((resolve) => {
+                          const reader = new FileReader();
+                          reader.onload = () => {
+                            resolve({
+                              id: generateAttachmentId(),
+                              dataUrl: reader.result as string,
+                              mimeType: file.type,
+                            });
+                          };
+                          reader.readAsDataURL(file);
+                        });
+                      });
+                      Promise.all(promises).then((newAtts) => {
+                        props.onAttachmentsChange!( [...current, ...newAtts] );
+                        target.value = "";
+                      });
+                    }}
+                  />
+                  <button
+                    class="chat-compose__add"
+                    type="button"
+                    ?disabled=${!props.connected}
+                    @click=${() => {
+                      const el = document.getElementById("chat-file-input");
+                      if (el) (el as HTMLInputElement).click();
+                    }}
+                  >
+                    +
+                  </button>
+                  <label class="field chat-compose__field">
+                    <span>Message</span>
+                    <textarea
+                      ${ref((el) => el && adjustTextareaHeight(el as HTMLTextAreaElement))}
+                      .value=${props.draft}
+                      ?disabled=${!props.connected}
+                      @keydown=${(e: KeyboardEvent) => {
+                        if (e.key !== "Enter") {
+                          return;
+                        }
+                        if (e.isComposing || e.keyCode === 229) {
+                          return;
+                        }
+                        if (e.shiftKey) {
+                          return;
+                        } // Allow Shift+Enter for line breaks
+                        if (!props.connected) {
+                          return;
+                        }
+                        e.preventDefault();
+                        if (canCompose) {
+                          props.onSend();
+                        }
+                      }}
+                      @input=${(e: Event) => {
+                        const target = e.target as HTMLTextAreaElement;
+                        adjustTextareaHeight(target);
+                        props.onDraftChange(target.value);
+                      }}
+                      @paste=${(e: ClipboardEvent) => handlePaste(e, props)}
+                      placeholder=${composePlaceholder}
+                    ></textarea>
+                  </label>
+                  <div class="chat-compose__actions">
+                    ${
+                      canAbort
+                        ? html`
+                            <button
+                              class="btn"
+                              ?disabled=${!props.connected || props.sending}
+                              @click=${props.onAbort}
+                            >
+                              Stop
+                            </button>
+                          `
+                        : nothing
+                    }
+                    <button
+                      class="btn primary"
+                      ?disabled=${!props.connected}
+                      @click=${props.onSend}
+                    >
+                      <span class="btn__icon">${icons.send}</span>
+                      <span>${isBusy ? "Queue" : "Send"}</span>
+                      <kbd class="btn-kbd">↵</kbd>
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
 
             ${
@@ -496,69 +613,6 @@ export function renderChat(props: ChatProps) {
           `
           : nothing
       }
-
-      <div class="chat-compose">
-        ${renderAttachmentPreview(props)}
-        <div class="chat-compose__row">
-          <label class="field chat-compose__field">
-            <span>Message</span>
-            <textarea
-              ${ref((el) => el && adjustTextareaHeight(el as HTMLTextAreaElement))}
-              .value=${props.draft}
-              ?disabled=${!props.connected}
-              @keydown=${(e: KeyboardEvent) => {
-                if (e.key !== "Enter") {
-                  return;
-                }
-                if (e.isComposing || e.keyCode === 229) {
-                  return;
-                }
-                if (e.shiftKey) {
-                  return;
-                } // Allow Shift+Enter for line breaks
-                if (!props.connected) {
-                  return;
-                }
-                e.preventDefault();
-                if (canCompose) {
-                  props.onSend();
-                }
-              }}
-              @input=${(e: Event) => {
-                const target = e.target as HTMLTextAreaElement;
-                adjustTextareaHeight(target);
-                props.onDraftChange(target.value);
-              }}
-              @paste=${(e: ClipboardEvent) => handlePaste(e, props)}
-              placeholder=${composePlaceholder}
-            ></textarea>
-          </label>
-          <div class="chat-compose__actions">
-            ${
-              canAbort
-                ? html`
-                    <button
-                      class="btn"
-                      ?disabled=${!props.connected || props.sending}
-                      @click=${props.onAbort}
-                    >
-                      Stop
-                    </button>
-                  `
-                : nothing
-            }
-            <button
-              class="btn primary"
-              ?disabled=${!props.connected}
-              @click=${props.onSend}
-            >
-              <span class="btn__icon">${icons.arrowDown}</span>
-              <span>${isBusy ? "Queue" : "Send"}</span>
-              <kbd class="btn-kbd">↵</kbd>
-            </button>
-          </div>
-        </div>
-      </div>
     </section>
   `;
 }

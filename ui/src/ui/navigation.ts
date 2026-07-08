@@ -209,7 +209,7 @@ export function subtitleForTab(tab: Tab) {
     case "nodes":
       return "Manage authenticated devices, hardware capabilities, and command permissions.";
     case "chat":
-      return "Initiate direct communication sessions with the system intelligence.";
+      return "Initiate direct chat sessions with the system intelligence.";
     case "config":
       return "Safely modify core configuration parameters within the local environment instance ~/.opin/opin.json";
     case "debug":

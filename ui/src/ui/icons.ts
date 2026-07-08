@@ -282,6 +282,12 @@ export const icons = {
       <path d="m19 12-7 7-7-7" />
     </svg>
   `,
+  send: html`
+    <svg viewBox="0 0 24 24">
+      <path d="m22 2-7 20-4-9-9-4Z" />
+      <path d="M22 2 11 13" />
+    </svg>
+  `,
   copy: html`
     <svg viewBox="0 0 24 24">
       <path

@@ -52,7 +52,7 @@ import {
 } from "./controllers/skills.ts";
 import { loadUsage, loadSessionTimeSeries, loadSessionLogs } from "./controllers/usage.ts";
 import { icons } from "./icons.ts";
-import { normalizeBasePath, TAB_GROUPS, subtitleForTab, titleForTab } from "./navigation.ts";
+import { normalizeBasePath, TAB_GROUPS, subtitleForTab, titleForTab, iconForTab, type Tab } from "./navigation.ts";
 
 // Module-scope debounce for usage date changes (avoids type-unsafe hacks on state object)
 let usageDateDebounceTimeout: number | null = null;
@@ -119,6 +119,41 @@ export function renderApp(state: AppViewState) {
   return html`
     <div class="shell ${isChat ? "shell--chat" : ""} ${chatFocus ? "shell--chat-focus" : ""} ${state.settings.navCollapsed ? "shell--nav-collapsed" : ""} ${state.onboarding ? "shell--onboarding" : ""}">
   
+      <!-- Icon rail: always visible in chat mode, one icon per group -->
+      <nav class="nav-rail" aria-label="Section navigation">
+        <div class="nav-rail__logo">
+          <img src=${basePath ? `${basePath}/Dashlogo.v3.svg` : "/Dashlogo.v3.svg"} alt="Opin" />
+        </div>
+        ${TAB_GROUPS.map((group) => {
+          const firstTab = group.tabs[0] as Tab;
+          const isGroupActive = group.tabs.some((tab) => tab === state.tab);
+          return html`
+            <button
+              class="nav-rail__icon ${isGroupActive ? "active" : ""}"
+              title=${group.label}
+              @click=${() => {
+                // Toggle session panel if already active group; otherwise switch to first tab
+                if (isGroupActive && isChat) {
+                  state.applySettings({
+                    ...state.settings,
+                    navCollapsed: !state.settings.navCollapsed,
+                  });
+                } else {
+                  state.applySettings({ ...state.settings, navCollapsed: false });
+                  state.setTab(firstTab);
+                }
+              }}
+            >
+              ${icons[iconForTab(firstTab)]}
+            </button>
+          `;
+        })}
+        <div class="nav-rail__spacer"></div>
+        <div class="nav-rail__icon ${state.connected ? "ok-dot" : "err-dot"}" title="Gateway ${state.connected ? "Online" : "Offline"}" style="cursor:default">
+          <span class="statusDot ${state.connected ? "ok" : ""}"></span>
+        </div>
+      </nav>
+
       <aside class="nav ${state.settings.navCollapsed ? "nav--collapsed" : ""}">
           <div class="topbar-left">
           <div class="brand">
@@ -180,6 +215,7 @@ export function renderApp(state: AppViewState) {
         </div>
       </aside>
       <main class="content ${isChat ? "content--chat" : ""}">
+        ${!isChat ? html`
         <section class="content-header">
           <div>
             ${state.tab === "usage" ? nothing : html`<div class="page-title">${titleForTab(state.tab)}</div>`}
@@ -187,9 +223,9 @@ export function renderApp(state: AppViewState) {
           </div>
           <div class="page-meta">
             ${state.lastError ? html`<div class="pill danger">${state.lastError}</div>` : nothing}
-            ${isChat ? renderChatControls(state) : nothing}
           </div>
         </section>
+        ` : nothing}
 
         ${
           state.tab === "overview"

@@ -53,16 +53,16 @@
 }
 
 .card {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015)), var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 16px;
-  box-shadow: inset 0 1px 0 var(--card-highlight);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
 }
 
 .card:hover {
-  box-shadow: inset 0 1px 0 var(--card-highlight);
+  border-color: transparent;
+  box-shadow: none;
 }
 
 .card-title {
@@ -84,17 +84,16 @@
    =========================================== */
 
 .stat {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015)),
-    var(--panel-strong);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 12px 14px;
-  box-shadow: inset 0 1px 0 var(--card-highlight);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
 }
 
 .stat:hover {
-  box-shadow: inset 0 1px 0 var(--card-highlight);
+  border-color: transparent;
+  box-shadow: none;
 }
 
 .stat-label {
@@ -166,11 +165,9 @@
 
 .account-card {
   border-radius: var(--radius-md);
-  padding: 12px;
-  border: 1px solid var(--border);
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01)),
-    var(--bg-elevated);
+  padding: 12px 0;
+  border: none;
+  background: transparent;
 }
 
 .account-card:hover {
@@ -325,13 +322,15 @@
   width: 8px;
   height: 8px;
   border-radius: var(--radius-full);
-  background: var(--danger);
-  box-shadow: 0 0 0 4px rgba(255, 123, 107, 0.12);
+  background: transparent;
+  border: 1px solid #000000;
+  box-shadow: none;
 }
 
 .statusDot.ok {
-  background: var(--ok);
-  box-shadow: 0 0 0 4px rgba(117, 240, 154, 0.12);
+  background: #000000;
+  border: 1px solid #000000;
+  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.08);
 }
 
 /* ===========================================
@@ -344,31 +343,32 @@
   justify-content: center;
   gap: 8px;
   border: 1px solid var(--border);
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015)), var(--card);
-  padding: 7px 12px;
-  border-radius: var(--radius-md);
+  background: transparent;
+  padding: 7px 14px;
+  border-radius: var(--radius-full);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: -0.01em;
   cursor: pointer;
-  box-shadow: inset 0 1px 0 var(--card-highlight);
+  color: var(--text-strong);
+  box-shadow: none;
+  transition: background var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
 }
 
 .btn:hover {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02)), var(--bg-hover);
-  box-shadow: inset 0 1px 0 var(--card-highlight);
+  background: #f4f4f5;
+  border-color: var(--border-strong);
+  box-shadow: none;
 }
 
 .btn:active {
-  background: var(--secondary);
-  box-shadow: inset 0 1px 0 var(--card-highlight);
+  background: #ebebeb;
+  opacity: 1;
 }
 
 .btn svg {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   stroke: currentColor;
   fill: none;
   stroke-width: 1.5px;
@@ -389,15 +389,16 @@
 }
 
 .btn.primary {
-  border-color: rgba(214, 255, 114, 0.24);
-  background: linear-gradient(180deg, var(--accent-hover), var(--accent));
-  color: var(--primary-foreground);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  border-color: #000000;
+  background: #000000;
+  color: #ffffff;
+  box-shadow: none;
 }
 
 .btn.primary:hover {
-  background: linear-gradient(180deg, #ecffad, var(--accent-hover));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  background: #1a1a1a;
+  border-color: #1a1a1a;
+  box-shadow: none;
 }
 
 /* Keyboard shortcut badge (shadcn style) */
@@ -425,13 +426,46 @@
   background: rgba(0, 0, 0, 0.08);
 }
 
-:root[data-theme="light"] .btn.primary .btn-kbd {
-  background: rgba(255, 255, 255, 0.25);
+/* Icon-only buttons — perfect circle */
+.btn.btn--icon,
+.btn--icon {
+  padding: 0 !important;
+  width: 36px;
+  min-width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: none;
+}
+
+.btn.btn--icon:hover,
+.btn--icon:hover {
+  background: #f4f4f5;
+  border-color: var(--border-strong);
+  color: var(--text-strong);
+  box-shadow: none;
+}
+
+.btn.btn--icon svg,
+.btn--icon svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.5px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .btn.active {
-  background: var(--accent-subtle);
-  color: var(--accent);
+  background: #f4f4f5;
+  border-color: var(--border-strong);
+  color: var(--text-strong);
 }
 
 .btn.danger {
@@ -475,13 +509,13 @@
 .field input,
 .field textarea,
 .field select {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01)), var(--panel);
-  border: 1px solid var(--border);
+  background: var(--glass-input);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border);
   border-radius: var(--radius-md);
   padding: 9px 11px;
   outline: none;
-  box-shadow: inset 0 1px 0 var(--card-highlight);
   color: var(--text-strong);
   transition:
     border-color var(--duration-fast),
@@ -489,13 +523,19 @@
     background var(--duration-fast);
 }
 
+.field input:hover,
+.field textarea:hover,
+.field select:hover {
+  background: var(--glass-input-hover);
+  border-color: var(--glass-border-hover);
+}
+
 .field input:focus,
 .field textarea:focus,
 .field select:focus {
-  border-color: var(--border-hover);
-  box-shadow:
-    inset 0 1px 0 var(--card-highlight),
-    var(--focus-glow);
+  background: var(--glass-input-hover);
+  border-color: var(--accent);
+  box-shadow: var(--focus-glow);
 }
 
 .field select {
@@ -640,10 +680,10 @@
       var(--card) 0 var(--c),
       rgba(0, 0, 0, 0) var(--c)
     ),
-    radial-gradient(circle at 50% 50%, var(--accent), transparent 60%),
-    radial-gradient(circle at 50% 50%, var(--accent-2), transparent 60%),
-    radial-gradient(circle at 50% 50%, rgba(214, 255, 114, 0.4), transparent 60%),
-    radial-gradient(ellipse at 50% 50%, rgba(121, 210, 178, 0.4), transparent 60%);
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.8), transparent 60%),
+    radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.15), transparent 60%),
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.6), transparent 60%),
+    radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.1), transparent 60%);
   background-size:
     12px 20.7846097px,
     12px 20.7846097px,
@@ -1577,7 +1617,7 @@
 .chat-workspace {
   display: grid;
   grid-template-columns: minmax(200px, 260px) minmax(0, 1fr);
-  gap: 14px;
+  gap: 0;
   flex: 1;
   min-height: 0;
   height: 100%;
@@ -1585,44 +1625,50 @@
 }
 
 .chat-session-list {
-  border: 1px dashed var(--divider-dash);
-  border-radius: 20px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.01)), var(--panel);
-  padding: 12px;
+  border: none;
+  border-right: 1px solid #e4e4e7;
+  border-radius: 0;
+  background: #ffffff;
+  padding: 16px 12px;
   display: grid;
   grid-template-rows: auto 1fr;
   gap: 10px;
   min-height: 0;
   overflow: hidden;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  box-shadow: none;
 }
 
 .chat-session-list__header {
   display: grid;
   gap: 8px;
   padding-bottom: 10px;
-  border-bottom: 1px dashed var(--divider-dash);
+  border-bottom: 1px solid #e4e4e7;
+}
+
+.chat-session-list__actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
 }
 
 .chat-session-list__eyebrow {
   font-size: 10px;
   color: var(--muted);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
+  font-weight: 600;
 }
 
 .chat-session-list__title {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-strong);
 }
 
 .chat-session-list__items {
   display: grid;
-  gap: 4px;
+  gap: 2px;
   align-content: start;
-
   overflow-y: auto;
   min-height: 0;
 }
@@ -1632,37 +1678,36 @@
   gap: 2px;
   width: 100%;
   text-align: left;
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  border-radius: 14px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.01)), var(--card);
-  padding: 9px 10px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  background: transparent;
+  padding: 9px 14px;
   cursor: pointer;
-  transition:
-    border-color 160ms ease-out,
-    background 160ms ease-out;
+  transition: background var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out);
 }
 
 .chat-session-list__item:hover {
-  border-color: rgba(214, 255, 114, 0.12);
+  border-color: transparent;
+  background: #f4f4f5;
 }
 
 .chat-session-list__item.active {
-  background:
-    linear-gradient(180deg, rgba(214, 255, 114, 0.18), rgba(214, 255, 114, 0.08)), #182214;
-  color: #000;
+  background: #000000;
+  color: #ffffff;
+  border-color: #000000;
 }
 
 .chat-session-list__item.active .chat-session-list__name {
-  color: #000;
+  color: #ffffff;
 }
 
 .chat-session-list__item.active .chat-session-list__meta {
-  color: rgba(0, 0, 0, 0.6);
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .chat-session-list__name {
   font-size: 12px;
+  font-weight: 500;
   color: var(--text-strong);
   white-space: nowrap;
   overflow: hidden;
@@ -1677,12 +1722,11 @@
 .chat-workspace__messages {
   min-width: 0;
   display: flex;
-  border: 1px dashed var(--divider-dash);
-  border-radius: 22px;
-  padding: 10px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.008)),
-    rgba(17, 25, 35, 0.65);
+  flex: 1;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
 }
 
 .shell--chat .chat {
@@ -1724,7 +1768,7 @@
   min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 16px 12px;
+  padding: 16px 24px 100px 24px;
   min-width: 0;
   border-radius: 0;
   border: none;
@@ -2044,59 +2088,7 @@
   text-align: right;
 }
 
-/* Chat compose */
-.chat-compose {
-  margin-top: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.shell--chat .chat-compose {
-  position: sticky;
-  bottom: 0;
-  z-index: 5;
-  margin-top: 0;
-  padding-top: 12px;
-  background: linear-gradient(180deg, transparent 0%, var(--bg) 40%);
-}
-
-.shell--chat-focus .chat-compose {
-  bottom: calc(var(--shell-pad) + 8px);
-  padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
-  border-bottom-left-radius: var(--radius-lg);
-  border-bottom-right-radius: var(--radius-lg);
-}
-
-.chat-compose__field {
-  gap: 4px;
-}
-
-.chat-compose__field textarea {
-  min-height: 72px;
-  padding: 10px 14px;
-  border-radius: var(--radius-lg);
-  resize: vertical;
-  white-space: pre-wrap;
-  font-family: var(--font-body);
-  line-height: 1.5;
-  background: var(--card);
-  box-shadow: inset 0 1px 0 var(--card-highlight);
-}
-
-.chat-compose__field textarea:focus {
-  box-shadow: var(--focus-ring);
-}
-
-.chat-compose__field textarea:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.chat-compose__actions {
-  justify-content: flex-end;
-  align-self: end;
-}
+/* Chat compose neutralized */
 
 @media (max-width: 900px) {
   .chat-workspace {
@@ -2359,7 +2351,7 @@
 
 .agent-tab.active {
   background: var(--accent);
-  color: #000;
+  color: #ffffff;
 }
 
 .agents-overview-grid {
