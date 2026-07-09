@@ -320,8 +320,9 @@ function renderGroupedMessage(
                 if (typeof m.durationMs === "number") {
                   return Math.round(m.durationMs / 1000);
                 }
-                if (m.usage && typeof (m.usage as any).durationMs === "number") {
-                  return Math.round((m.usage as any).durationMs / 1000);
+                const usage = m.usage as Record<string, unknown> | undefined;
+                if (usage && typeof usage.durationMs === "number") {
+                  return Math.round(usage.durationMs / 1000);
                 }
                 return Math.max(1, Math.round(extractedThinking!.length / 40));
               })();
