@@ -41,13 +41,63 @@ export function stripEnvelope(text: string): string {
   return text.slice(match[0].length);
 }
 
+export function cleanWeirdText(text: string): string {
+  const logRegex =
+    /(?:System:\s*)?\[(?:[A-Za-z]{3}\s+)?(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}(?::\d{2})?)\s+GMT[+-]\d+\]\s*([^[\n]+?)(?=\s*(?:System:\s*)?\[|\n|$)/g;
+
+  const matches = Array.from(text.matchAll(logRegex));
+  if (matches.length === 0) {
+    return text;
+  }
+
+  const statusLines: string[] = [];
+  let mainMessage = "";
+
+  for (const match of matches) {
+    const rawTime = match[1];
+    const rawMsg = match[2].trim().replace(/\.$/, "");
+
+    const timeMatch = rawTime.match(/(\d{2}:\d{2})/);
+    const timeStr = timeMatch ? timeMatch[1] : rawTime;
+
+    const isStatusLog = /gateway|connected|disconnected|status/i.test(rawMsg);
+    if (isStatusLog) {
+      statusLines.push(`* **${rawMsg}** (\`${timeStr}\`)`);
+    } else {
+      if (mainMessage) {
+        mainMessage += "\n";
+      }
+      mainMessage += rawMsg;
+    }
+  }
+
+  const lastMatchEnd = matches[matches.length - 1].index! + matches[matches.length - 1][0].length;
+  const trailing = text.slice(lastMatchEnd).trim();
+  if (trailing) {
+    if (mainMessage) {
+      mainMessage += "\n";
+    }
+    mainMessage += trailing;
+  }
+
+  const parts: string[] = [];
+  if (statusLines.length > 0) {
+    parts.push(statusLines.join("\n"));
+  }
+  if (mainMessage) {
+    parts.push(mainMessage);
+  }
+
+  return parts.join("\n\n");
+}
+
 export function extractText(message: unknown): string | null {
   const m = message as Record<string, unknown>;
   const role = typeof m.role === "string" ? m.role : "";
   const content = m.content;
   if (typeof content === "string") {
     const processed = role === "assistant" ? stripThinkingTags(content) : stripEnvelope(content);
-    return processed;
+    return processed ? cleanWeirdText(processed) : processed;
   }
   if (Array.isArray(content)) {
     const parts = content
@@ -62,12 +112,12 @@ export function extractText(message: unknown): string | null {
     if (parts.length > 0) {
       const joined = parts.join("\n");
       const processed = role === "assistant" ? stripThinkingTags(joined) : stripEnvelope(joined);
-      return processed;
+      return processed ? cleanWeirdText(processed) : processed;
     }
   }
   if (typeof m.text === "string") {
     const processed = role === "assistant" ? stripThinkingTags(m.text) : stripEnvelope(m.text);
-    return processed;
+    return processed ? cleanWeirdText(processed) : processed;
   }
   return null;
 }
