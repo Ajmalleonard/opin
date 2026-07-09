@@ -34,3 +34,13 @@ export type CronFormState = {
   deliveryTo: string;
   timeoutSeconds: string;
 };
+
+export type SessionLogEntry = {
+  timestamp: number;
+  role: "user" | "assistant" | "tool" | "toolResult" | "system";
+  content: string;
+  tokens?: number;
+  cost?: number;
+};
+
+export type SessionLogRole = SessionLogEntry["role"];
