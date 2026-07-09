@@ -7,6 +7,7 @@
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "lib": ["DOM", "DOM.Iterable", "ES2023", "ScriptHost"],
+    "jsx": "preserve",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "noEmit": true,
@@ -22,6 +23,13 @@
       "opin/plugin-sdk": ["./src/plugin-sdk/index.ts"]
     }
   },
-  "include": ["src/**/*", "ui/**/*", "extensions/**/*"],
-  "exclude": ["node_modules", "dist", "src/**/*.test.ts", "extensions/**/*.test.ts"]
+  "include": ["src/**/*", "extensions/**/*"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "src/**/*.test.ts",
+    "extensions/**/*.test.ts",
+    "src/opincode",
+    "src/opincode/**/*"
+  ]
 }
