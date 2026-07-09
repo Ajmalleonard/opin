@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { useRef, useEffect } from "react";
 import { extractText, extractThinking } from "../../ui/chat/message-extract";
@@ -105,12 +106,13 @@ export function ControlUiShell({ activeTab }: { activeTab: Tab }) {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => store.sendChat("/new")}
-              className="px-3 py-1.5 bg-accent text-accent-foreground text-xs font-semibold rounded-full hover:opacity-90 transition-opacity"
+            <Button
+              size="sm"
+              onPress={() => store.sendChat("/new")}
+              className="bg-accent text-accent-foreground text-xs font-semibold px-3 min-w-0 h-7"
             >
               New
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -399,10 +401,10 @@ export function ControlUiShell({ activeTab }: { activeTab: Tab }) {
                 className="hidden"
                 accept="image/*"
               />
-              <button
-                onClick={() => fileInputRef.current?.click()}
-                className="p-2.5 text-foreground/60 hover:text-foreground hover:bg-default rounded-full transition-colors flex items-center justify-center self-center"
-                title="Attach image"
+              <Button
+                isIconOnly
+                onPress={() => fileInputRef.current?.click()}
+                className="p-2 text-foreground/60 hover:text-foreground hover:bg-default shrink-0 min-w-0 w-9 h-9 flex items-center justify-center self-center"
               >
                 <svg
                   className="w-5 h-5"
@@ -413,7 +415,7 @@ export function ControlUiShell({ activeTab }: { activeTab: Tab }) {
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
-              </button>
+              </Button>
 
               {/* Text Input Block */}
               <div className="flex-1 flex flex-col min-w-0">
@@ -424,9 +426,11 @@ export function ControlUiShell({ activeTab }: { activeTab: Tab }) {
                       alt="Attachment preview"
                       className="max-h-16 rounded-lg border border-border object-contain"
                     />
-                    <button
-                      onClick={handleClearAttachment}
-                      className="absolute -top-1 -right-1 bg-surface text-foreground rounded-full p-1 border border-border hover:bg-surface-secondary"
+                    <Button
+                      isIconOnly
+                      size="sm"
+                      onPress={handleClearAttachment}
+                      className="absolute -top-1 -right-1 bg-surface text-foreground rounded-full border border-border p-1 hover:bg-surface-secondary min-w-0 w-5 h-5 flex items-center justify-center"
                     >
                       <svg
                         className="w-3.5 h-3.5"
@@ -441,7 +445,7 @@ export function ControlUiShell({ activeTab }: { activeTab: Tab }) {
                           d="M6 18L18 6M6 6l12 12"
                         />
                       </svg>
-                    </button>
+                    </Button>
                   </div>
                 )}
                 <textarea
@@ -464,10 +468,10 @@ export function ControlUiShell({ activeTab }: { activeTab: Tab }) {
               </div>
 
               {/* Action/Submit Button */}
-              <button
-                onClick={() => void store.sendChat()}
-                className="p-3 bg-accent text-accent-foreground rounded-full hover:opacity-90 transition-opacity flex items-center justify-center shrink-0"
-                title="Send message"
+              <Button
+                isIconOnly
+                onPress={() => void store.sendChat()}
+                className="p-3 bg-accent text-accent-foreground rounded-full hover:opacity-90 transition-opacity flex items-center justify-center shrink-0 min-w-0 w-10 h-10"
               >
                 <svg
                   className="w-4 h-4 transform rotate-90"
@@ -482,7 +486,7 @@ export function ControlUiShell({ activeTab }: { activeTab: Tab }) {
                     d="M12 19V5m0 0l-7 7m7-7l7 7"
                   />
                 </svg>
-              </button>
+              </Button>
             </div>
           </div>
         </div>
