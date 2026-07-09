@@ -4,11 +4,11 @@ import { useState, type FC } from "react";
 import type { ArenaGraph, ArenaNodeType } from "./ArenaGatewayClient";
 
 const NODE_PALETTE: { type: ArenaNodeType; label: string; color: string }[] = [
-  { type: "goal", label: "Goal", color: "bg-blue-500/10 text-blue-200" },
-  { type: "skill", label: "Skill", color: "bg-emerald-500/10 text-emerald-200" },
-  { type: "agent", label: "Agent", color: "bg-purple-500/10 text-purple-200" },
-  { type: "condition", label: "Condition", color: "bg-amber-500/10 text-amber-200" },
-  { type: "output", label: "Output", color: "bg-slate-500/10 text-slate-200" },
+  { type: "goal", label: "Goal", color: "bg-default text-foreground/80" },
+  { type: "skill", label: "Skill", color: "bg-default text-foreground/80" },
+  { type: "agent", label: "Agent", color: "bg-default text-foreground/80" },
+  { type: "condition", label: "Condition", color: "bg-default text-foreground/80" },
+  { type: "output", label: "Output", color: "bg-default text-foreground/80" },
 ];
 
 interface ArenaSidebarProps {

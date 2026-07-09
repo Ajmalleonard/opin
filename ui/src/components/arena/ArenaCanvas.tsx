@@ -54,19 +54,28 @@ function graphToReactFlow(
     };
   });
 
-  const edges: Edge[] = graph.edges.map((e) => ({
-    id: e.id,
-    source: e.source,
-    target: e.target,
-    sourceHandle: e.sourceHandle,
-    targetHandle: e.targetHandle,
-    label: e.label,
-    animated: nodeStatuses.get(e.source)?.status === "completed",
-    style: {
-      stroke: "var(--color-muted, #555)",
-      strokeWidth: 2,
-    },
-  }));
+  const edges: Edge[] = graph.edges.map((e) => {
+    let strokeColor = "var(--accent, #000)";
+    if (e.sourceHandle === "success") {
+      strokeColor = "#22c55e"; // Green for True/Success
+    } else if (e.sourceHandle === "failure") {
+      strokeColor = "#ef4444"; // Red for False/Failure
+    }
+
+    return {
+      id: e.id,
+      source: e.source,
+      target: e.target,
+      sourceHandle: e.sourceHandle,
+      targetHandle: e.targetHandle,
+      label: e.label,
+      animated: nodeStatuses.get(e.source)?.status === "completed",
+      style: {
+        stroke: strokeColor,
+        strokeWidth: 3,
+      },
+    };
+  });
 
   return { nodes, edges };
 }
@@ -178,7 +187,7 @@ const ArenaCanvas: FC<ArenaCanvasProps> = ({
           variant={BackgroundVariant.Dots}
           gap={20}
           size={1}
-          color="var(--color-border, #333)"
+          color="var(--separator, #e5e5e5)"
         />
         <Controls
           className="!bg-surface !border-none !rounded-lg"
