@@ -169,7 +169,7 @@
     text-underline-offset: 2px;
   }
 
-  .control-markdown code {
+  .control-markdown :not(pre) > code {
     border-radius: var(--radius);
     background: var(--surface-secondary);
     padding: 0.1rem 0.35rem;
@@ -283,7 +283,7 @@
 .chat-text ol {
   list-style-type: decimal;
 }
-.chat-text code {
+.chat-text :not(pre) > code {
   background: var(--surface-secondary, #f3f4f6);
   padding: 2px 5px;
   border-radius: 6px;
