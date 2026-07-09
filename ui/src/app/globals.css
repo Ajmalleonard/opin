@@ -290,3 +290,11 @@
   font-size: 0.9em;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
+
+/* Shiki code block overrides */
+.shiki-container pre {
+  background-color: transparent !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
