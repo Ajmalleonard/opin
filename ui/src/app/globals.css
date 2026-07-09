@@ -179,10 +179,6 @@
 
   .control-markdown pre {
     overflow: auto;
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    background: var(--surface);
-    padding: 1rem;
   }
 
   .control-markdown blockquote {
@@ -294,6 +290,8 @@
 /* Shiki code block overrides */
 .shiki-container pre {
   background-color: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
   margin: 0 !important;
   padding: 0 !important;
   overflow: visible !important;
