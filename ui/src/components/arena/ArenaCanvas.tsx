@@ -13,6 +13,8 @@ import {
   type Edge,
   type NodeTypes,
   BackgroundVariant,
+  type NodeChange,
+  type EdgeChange,
 } from "@xyflow/react";
 import { useCallback, useMemo, type FC } from "react";
 import "@xyflow/react/dist/style.css";
@@ -119,7 +121,7 @@ const ArenaCanvas: FC<ArenaCanvasProps> = ({
   );
 
   const handleNodesChange = useCallback(
-    (changes: any) => {
+    (changes: NodeChange[]) => {
       if (readOnly) {
         return;
       }
@@ -131,7 +133,7 @@ const ArenaCanvas: FC<ArenaCanvasProps> = ({
   );
 
   const handleEdgesChange = useCallback(
-    (changes: any) => {
+    (changes: EdgeChange[]) => {
       if (readOnly) {
         return;
       }
