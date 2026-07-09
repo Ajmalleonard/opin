@@ -152,8 +152,9 @@ export function ControlUiShell({ activeTab }: { activeTab: Tab }) {
             </div>
           ) : (
             (() => {
-              const groups: { role: string; timestamp: number; messages: any[] }[] = [];
-              let currentGroup: { role: string; timestamp: number; messages: any[] } | null = null;
+              const groups: { role: string; timestamp: number; messages: unknown[] }[] = [];
+              let currentGroup: { role: string; timestamp: number; messages: unknown[] } | null =
+                null;
 
               for (const message of store.chatMessages) {
                 const normalized = normalizeMessage(message);
@@ -178,7 +179,6 @@ export function ControlUiShell({ activeTab }: { activeTab: Tab }) {
 
               return groups.map((group, groupIdx) => {
                 const isUser = group.role === "user";
-                const isAssistant = group.role === "assistant";
                 const formattedTime = new Date(group.timestamp).toLocaleTimeString([], {
                   hour: "numeric",
                   minute: "2-digit",
@@ -286,11 +286,11 @@ export function ControlUiShell({ activeTab }: { activeTab: Tab }) {
 
                         // Assistant message
                         const durationSeconds = (() => {
-                          const mRecord = message as Record<string, any>;
+                          const mRecord = message as Record<string, unknown>;
                           if (typeof mRecord.durationMs === "number") {
                             return Math.round(mRecord.durationMs / 1000);
                           }
-                          const usage = mRecord.usage as Record<string, any> | undefined;
+                          const usage = mRecord.usage as Record<string, unknown> | undefined;
                           if (usage && typeof usage.durationMs === "number") {
                             return Math.round(usage.durationMs / 1000);
                           }
