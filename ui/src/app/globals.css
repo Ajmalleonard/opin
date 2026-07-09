@@ -287,12 +287,32 @@
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
-/* Shiki code block overrides */
+/* Shiki code block overrides — hard-reset every element that global
+   CSS (HeroUI, Fumadocs) might accidentally style inside a highlighted block */
 .shiki-container pre {
-  background-color: transparent !important;
+  /* Let Shiki's own inline background-color show; remove conflicting box styles */
   border: 0 !important;
+  border-radius: 0 !important;
   box-shadow: none !important;
   margin: 0 !important;
+  padding: 1rem !important;
+  overflow: auto !important;
+}
+
+.shiki-container code {
+  /* HeroUI / Fumadocs style `code` globally — override everything */
+  background-color: transparent !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
   padding: 0 !important;
-  overflow: visible !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  color: inherit !important;
+  box-shadow: none !important;
+}
+
+.shiki-container .line {
+  background-color: transparent !important;
+  background: transparent !important;
 }

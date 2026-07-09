@@ -160,7 +160,7 @@ function CodeBlock({ children, ...props }: CodeBlockProps) {
   })();
 
   return (
-    <div className="my-4 rounded-xl border border-border bg-neutral-50/50 dark:bg-zinc-950/20 overflow-hidden">
+    <div className="my-4 rounded-xl border border-border overflow-hidden">
       <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-neutral-100/50 dark:bg-zinc-900/35">
         <span className="text-[11px] font-mono font-semibold tracking-wider text-muted-foreground uppercase">
           {displayLanguage}
@@ -231,12 +231,12 @@ function CodeBlock({ children, ...props }: CodeBlockProps) {
       {highlightedHtml ? (
         <div
           dangerouslySetInnerHTML={{ __html: highlightedHtml }}
-          className="shiki-container p-4 overflow-auto text-[13px] leading-relaxed scrollbar-thin bg-transparent"
+          className="shiki-container overflow-auto text-[13px] leading-relaxed scrollbar-thin"
         />
       ) : (
         <pre
           {...props}
-          className="p-4 m-0 overflow-auto bg-transparent border-0 font-mono text-[13px] leading-relaxed text-foreground scrollbar-thin"
+          className="p-4 m-0 overflow-auto bg-surface border-0 font-mono text-[13px] leading-relaxed text-foreground scrollbar-thin"
         >
           {children}
         </pre>
