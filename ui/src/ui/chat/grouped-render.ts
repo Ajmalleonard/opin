@@ -2,6 +2,7 @@ import { html, nothing } from "lit";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import type { AssistantIdentity } from "../assistant-identity.ts";
 import type { MessageGroup } from "../types/chat-types.ts";
+import { icons } from "../icons.ts";
 import { toSanitizedMarkdownHtml } from "../markdown.ts";
 import { renderCopyAsMarkdownButton } from "./copy-as-markdown.ts";
 import {
@@ -256,8 +257,54 @@ function renderGroupedMessage(
     return html`${toolCards.map((card) => renderToolCardSidebar(card, onOpenSidebar))}`;
   }
 
-  if (!markdown && !hasToolCards && !hasImages) {
+  if (!markdown && !hasToolCards && !hasImages && !reasoningMarkdown) {
     return nothing;
+  }
+
+  if (role === "user") {
+    const userText = markdownBase || String(m.content || m.text || "");
+    return html`
+      <div class="chat-bubble-container flex flex-col items-end gap-1.5 max-w-full">
+        <div class="${bubbleClasses}">
+          <div class="chat-text">${userText}</div>
+        </div>
+        <div class="chat-bubble-actions flex items-center gap-1 pr-1 text-muted/60 text-xs">
+          <!-- Copy button -->
+          <button
+            class="chat-action-btn hover:text-foreground transition-colors p-1"
+            title="Copy message"
+            @click=${async (e: Event) => {
+              const btn = e.currentTarget as HTMLButtonElement;
+              await navigator.clipboard.writeText(userText).catch(() => {});
+              const origHtml = btn.innerHTML;
+              btn.innerHTML = `<div class="w-3.5 h-3.5 flex items-center justify-center [&>svg]:w-full [&>svg]:h-full text-emerald-500">${icons.check}</div>`;
+              setTimeout(() => {
+                btn.innerHTML = origHtml;
+              }, 1500);
+            }}
+          >
+            <div class="w-3.5 h-3.5 flex items-center justify-center [&>svg]:w-full [&>svg]:h-full">${icons.copy}</div>
+          </button>
+          <!-- Edit button -->
+          <button
+            class="chat-action-btn hover:text-foreground transition-colors p-1"
+            title="Edit message"
+            @click=${() => {
+              const textarea = document.querySelector(
+                ".chat-compose__field textarea",
+              ) as HTMLTextAreaElement | null;
+              if (textarea) {
+                textarea.value = userText;
+                textarea.focus();
+                textarea.dispatchEvent(new Event("input", { bubbles: true }));
+              }
+            }}
+          >
+            <div class="w-3.5 h-3.5 flex items-center justify-center [&>svg]:w-full [&>svg]:h-full">${icons.edit}</div>
+          </button>
+        </div>
+      </div>
+    `;
   }
 
   return html`
@@ -266,9 +313,44 @@ function renderGroupedMessage(
       ${renderMessageImages(images)}
       ${
         reasoningMarkdown
-          ? html`<div class="chat-thinking">${unsafeHTML(
-              toSanitizedMarkdownHtml(reasoningMarkdown),
-            )}</div>`
+          ? (() => {
+              // Estimate duration: approx 40 characters per second of thinking,
+              // or use the durationMs if provided in the message.
+              const durationSeconds = (() => {
+                if (typeof m.durationMs === "number") {
+                  return Math.round(m.durationMs / 1000);
+                }
+                if (m.usage && typeof (m.usage as any).durationMs === "number") {
+                  return Math.round((m.usage as any).durationMs / 1000);
+                }
+                return Math.max(1, Math.round(extractedThinking!.length / 40));
+              })();
+
+              return html`
+                <details class="chat-thinking-details group my-3" ?open=${!opts.isStreaming}>
+                  <summary class="chat-thinking-summary flex items-center gap-1.5 cursor-pointer select-none text-muted hover:text-foreground transition-colors font-medium text-[13px] py-1.5 list-none outline-none">
+                    <!-- Blue DeepSeek orbit icon -->
+                    <div class="w-4 h-4 flex items-center justify-center [&>svg]:w-full [&>svg]:h-full text-blue-600 shrink-0">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                        <ellipse cx="12" cy="12" rx="3" ry="9" transform="rotate(45 12 12)" />
+                        <ellipse cx="12" cy="12" rx="3" ry="9" transform="rotate(-45 12 12)" />
+                        <circle cx="12" cy="12" r="1.5" fill="currentColor" />
+                      </svg>
+                    </div>
+                    <span>Thought for ${durationSeconds} seconds</span>
+                    <!-- Chevron pointing right (closed) -> down (open) -->
+                    <div class="w-3 h-3 flex items-center justify-center [&>svg]:w-full [&>svg]:h-full text-muted/60 transition-transform duration-200 chevron-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6" />
+                      </svg>
+                    </div>
+                  </summary>
+                  <div class="chat-thinking-content pl-4 border-l border-separator/40 text-muted/80 my-2 text-[13px] leading-relaxed">
+                    ${unsafeHTML(toSanitizedMarkdownHtml(reasoningMarkdown))}
+                  </div>
+                </details>
+              `;
+            })()
           : nothing
       }
       ${
