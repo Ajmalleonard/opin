@@ -513,7 +513,7 @@ export function ControlUiShell({ activeTab }: { activeTab: Tab }) {
         {/* Absolute floating composer pill dock */}
         <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-background via-background/90 to-transparent pointer-events-none">
           <div className="max-w-3xl mx-auto pointer-events-auto">
-            <div className="flex items-end gap-2 bg-surface border border-border rounded-lg p-2.5 shadow-xl backdrop-blur-md relative">
+            <div className="flex items-end gap-2 bg-surface border border-border rounded-3xl p-3 shadow-xl backdrop-blur-md relative">
               {/* Autocomplete Suggestions Menu */}
               {activeTrigger && filteredOptions.length > 0 && (
                 <div className="absolute bottom-[calc(100%+8px)] left-0 right-0 max-w-3xl mx-auto bg-surface border border-border rounded-xl shadow-2xl p-1.5 max-h-64 overflow-y-auto z-50 flex flex-col gap-0.5 pointer-events-auto">

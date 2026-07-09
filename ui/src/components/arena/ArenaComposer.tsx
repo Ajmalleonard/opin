@@ -242,7 +242,7 @@ const ArenaComposer: FC<ArenaComposerProps> = ({
           </div>
         )}
 
-        <div className="relative flex items-end gap-2 bg-surface border border-border rounded-lg p-2.5 shadow-xl backdrop-blur-md">
+        <div className="relative flex items-end gap-2 bg-surface border border-border rounded-3xl p-3 shadow-xl backdrop-blur-md">
           {/* Autocomplete Suggestions Menu */}
           {activeTrigger && filteredOptions.length > 0 && (
             <div className="absolute bottom-[calc(100%+8px)] left-0 right-0 max-w-3xl mx-auto bg-surface border border-border rounded-xl shadow-2xl p-1.5 max-h-64 overflow-y-auto z-50 flex flex-col gap-0.5 pointer-events-auto">
