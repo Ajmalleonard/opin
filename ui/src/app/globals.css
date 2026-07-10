@@ -368,3 +368,59 @@
   left: 0.25rem;
   top: 0.6rem;
 }
+
+/* Spinning dashed border animation */
+@keyframes spin-border {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.running-dashed-border {
+  position: absolute;
+  inset: -1.5px;
+  border: 1.5px dashed var(--accent, #60a5fa);
+  border-radius: calc(0.75rem + 1.5px); /* matches rounded-xl */
+  animation: spin-border 20s linear infinite;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Shimmer loading animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.running-shimmer-bg {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: 0.75rem; /* matches rounded-xl */
+  z-index: 1;
+}
+
+.dark .running-shimmer-bg {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.03) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 200% 100%;
+}
