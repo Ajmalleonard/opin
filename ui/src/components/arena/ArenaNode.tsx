@@ -1,28 +1,29 @@
 "use client";
 
 import { Handle, Position, type NodeProps } from "@xyflow/react";
-import { memo, type FC } from "react";
+import { memo, useState, type FC } from "react";
 import type { ArenaNodeData, ArenaNodeType } from "./ArenaGatewayClient";
+import { Markdown } from "../control-ui/markdown";
 
 const NODE_LABEL: Record<ArenaNodeType, string> = {
-  goal: "Schedule trigger",
-  skill: "HTTP API Request",
-  agent: "Agent Executor",
-  condition: "Conditional",
-  output: "Output Template",
+  goal: "Goal",
+  skill: "Skill",
+  agent: "Agent",
+  condition: "Condition",
+  output: "Output",
 };
 
 const NODE_ICON: Record<ArenaNodeType, string> = {
-  goal: "✶",
-  skill: "<>",
-  agent: "⌘",
-  condition: "⌥",
+  goal: "✦", // start marker
+  skill: "⚙", // gear
+  agent: "◆", // agent
+  condition: "⑂", // branch
   output: "✓",
 };
 
 // ── Status helpers ──────────────────────────────────────────────────────────
 
-type NodeStatus = "idle" | "running" | "completed" | "failed";
+type NodeStatus = "idle" | "running" | "completed" | "failed" | "skipped";
 
 function statusClasses(status: NodeStatus): string {
   switch (status) {
@@ -32,6 +33,8 @@ function statusClasses(status: NodeStatus): string {
       return "ring-1 ring-emerald-400/40";
     case "failed":
       return "ring-2 ring-red-400/60";
+    case "skipped":
+      return "opacity-60";
     default:
       return "";
   }
@@ -45,8 +48,27 @@ function statusText(status: NodeStatus): string | null {
       return "Completed";
     case "failed":
       return "Failed";
+    case "skipped":
+      return "Skipped";
     default:
       return null;
+  }
+}
+
+/** The one-line summary shown on the compact node card, per node type. */
+function summaryFor(nodeType: ArenaNodeType, data: ArenaNodeData): string {
+  switch (nodeType) {
+    case "goal":
+    case "agent":
+      return data.prompt?.trim() || "No task set";
+    case "skill":
+      return data.skillName?.trim() || "No skill set";
+    case "condition":
+      return data.conditionExpr?.trim() || "No condition set";
+    case "output":
+      return data.outputTemplate?.trim() || "No template set";
+    default:
+      return "";
   }
 }
 
@@ -56,59 +78,36 @@ type ArenaNodeProps = NodeProps & {
   data: ArenaNodeData & {
     nodeType?: ArenaNodeType;
     status?: NodeStatus;
+    label?: string;
   };
 };
 
 const ArenaNode: FC<ArenaNodeProps> = ({ data, selected }) => {
+  const [hovered, setHovered] = useState(false);
   const nodeType = (data.nodeType as ArenaNodeType) ?? "goal";
-  const label = NODE_LABEL[nodeType] ?? nodeType;
+  const label = data.label?.trim() || NODE_LABEL[nodeType] || nodeType;
   const icon = NODE_ICON[nodeType] ?? "*";
   const status = (data.status as NodeStatus) ?? "idle";
-
   const isCondition = nodeType === "condition";
-
-  // Build key-value rows matching reference design
-  const rows: { key: string; value: string; isStatus?: boolean }[] = [];
-
-  if (nodeType === "goal") {
-    rows.push({ key: "Cadence", value: "Every 5 min" });
-    rows.push({ key: "Prompt", value: data.prompt ?? "Enter task..." });
-    if (data.model) {
-      rows.push({ key: "Model", value: data.model });
-    }
-  } else if (nodeType === "skill") {
-    rows.push({ key: "Method and endpoint", value: data.skillName ?? "None" });
-    if (data.prompt) {
-      rows.push({ key: "Prompt", value: data.prompt });
-    }
-  } else if (nodeType === "agent") {
-    rows.push({ key: "Agent model", value: data.model ?? "Default" });
-    rows.push({ key: "Prompt", value: data.prompt ?? "Enter task..." });
-    if (data.thinking) {
-      rows.push({ key: "Thinking", value: data.thinking });
-    }
-  } else if (nodeType === "condition") {
-    rows.push({ key: "Condition", value: data.conditionExpr ?? "None" });
-  } else if (nodeType === "output") {
-    rows.push({ key: "Template", value: data.outputTemplate ?? "None" });
-  }
-
-  if (status !== "idle") {
-    rows.push({ key: "Status", value: statusText(status) ?? "Idle", isStatus: true });
-  }
+  const summary = summaryFor(nodeType, data);
+  const detail = data.detail?.trim();
+  // Hover preview: full task spec if set, otherwise fall back to the summary
+  // so there's always something useful to show on hover.
+  const previewMarkdown = detail || summary;
 
   return (
     <div
-      className={`relative min-w-[240px] max-w-[320px] rounded-2xl bg-overlay p-4 text-foreground transition-all ${statusClasses(status)} ${selected ? "ring-2 ring-accent" : ""}`}
+      className={`relative min-w-[220px] max-w-[300px] rounded-2xl bg-overlay border border-border p-4 text-foreground transition-all ${statusClasses(status)} ${selected ? "ring-2 ring-accent" : ""}`}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
-      {/* Optional Start label above Goal node */}
       {nodeType === "goal" && (
         <div className="absolute -top-5 left-0 text-[10px] font-bold text-foreground/60 uppercase tracking-wider">
           Start
         </div>
       )}
 
-      {/* Input handle (left side) - ring shape */}
+      {/* Input handle (left side) */}
       {nodeType !== "goal" && (
         <Handle
           type="target"
@@ -118,7 +117,7 @@ const ArenaNode: FC<ArenaNodeProps> = ({ data, selected }) => {
         />
       )}
 
-      {/* Output handle (right side) - ring shape */}
+      {/* Output handle (right side) */}
       {nodeType !== "output" && !isCondition && (
         <Handle
           type="source"
@@ -128,7 +127,7 @@ const ArenaNode: FC<ArenaNodeProps> = ({ data, selected }) => {
         />
       )}
 
-      {/* Condition outputs: success (top-right, green ring) and failure (bottom-right, red ring) */}
+      {/* Condition outputs: success (top-right, green) and failure (bottom-right, red) */}
       {isCondition && (
         <>
           <Handle
@@ -148,41 +147,73 @@ const ArenaNode: FC<ArenaNodeProps> = ({ data, selected }) => {
         </>
       )}
 
-      {/* Node Content */}
-      <div className="space-y-3">
-        {/* Header: icon + title + ... */}
-        <div className="flex items-center justify-between pb-1">
-          <div className="flex items-center gap-2">
-            <span className="text-muted/80 font-mono text-sm font-semibold">{icon}</span>
-            <span className="font-bold text-sm text-foreground">{label}</span>
+      {/* Node content */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="text-muted/80 font-mono text-sm font-semibold shrink-0">{icon}</span>
+            <span className="font-bold text-sm text-foreground truncate">{label}</span>
           </div>
-          <span className="text-muted/40 text-xs font-bold tracking-widest cursor-pointer select-none">
-            ...
-          </span>
+          {detail && (
+            <span
+              className="text-[10px] text-muted/60 border border-border rounded-full px-1.5 py-0.5 shrink-0 select-none"
+              title="Has a full task spec — hover to preview, click to edit"
+            >
+              detail
+            </span>
+          )}
         </div>
 
-        {/* Properties table */}
-        <div className="space-y-2 text-xs">
-          {rows.map((row, i) => (
-            <div key={i} className="flex justify-between items-start gap-4">
-              <span className="text-muted/60 font-medium shrink-0">{row.key}</span>
-              <span
-                className={`font-semibold text-right break-all max-w-[150px] ${
-                  row.isStatus
-                    ? status === "completed"
-                      ? "text-emerald-500"
-                      : status === "failed"
-                        ? "text-red-500"
-                        : "text-blue-500"
-                    : "text-foreground"
-                }`}
-              >
-                {row.value}
-              </span>
-            </div>
-          ))}
+        <div className="text-xs text-foreground/80 truncate" title={summary}>
+          {summary}
         </div>
+
+        {data.capabilities && data.capabilities.length > 0 && (
+          <div className="flex flex-wrap gap-1">
+            {data.capabilities.slice(0, 3).map((capability) => (
+              <span
+                key={capability}
+                className="rounded-full bg-accent/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-accent"
+              >
+                {capability}
+              </span>
+            ))}
+            {data.capabilities.length > 3 && (
+              <span className="text-[9px] text-muted">+{data.capabilities.length - 3}</span>
+            )}
+          </div>
+        )}
+
+        {status !== "idle" && (
+          <div
+            className={`text-[10px] font-semibold uppercase tracking-wider ${
+              status === "completed"
+                ? "text-emerald-500"
+                : status === "failed"
+                  ? "text-red-500"
+                  : status === "skipped"
+                    ? "text-muted"
+                    : "text-blue-500"
+            }`}
+          >
+            {statusText(status)}
+          </div>
+        )}
       </div>
+
+      {/* Hover preview: full markdown task spec (or fallback summary) */}
+      {hovered && previewMarkdown && (
+        <div
+          className="nodrag nopan absolute left-0 top-[calc(100%+8px)] z-50 w-[340px] max-h-[280px] overflow-y-auto rounded-xl bg-surface border border-border p-3 shadow-xl"
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+        >
+          <div className="text-[10px] font-semibold uppercase tracking-wider text-muted mb-1.5">
+            {detail ? "Task detail" : "Summary"}
+          </div>
+          <Markdown content={previewMarkdown} className="prose prose-sm max-w-none text-xs" />
+        </div>
+      )}
     </div>
   );
 };
