@@ -97,7 +97,7 @@ const ArenaNode: FC<ArenaNodeProps> = ({ data, selected }) => {
 
   return (
     <div
-      className={`relative min-w-[220px] max-w-[300px] rounded-2xl bg-overlay border border-border p-4 text-foreground transition-all ${statusClasses(status)} ${selected ? "ring-2 ring-accent" : ""}`}
+      className={`relative min-w-[220px] max-w-[300px] rounded-xl bg-overlay border border-border p-4 text-foreground transition-all ${statusClasses(status)} ${selected ? "ring-2 ring-accent" : ""}`}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
