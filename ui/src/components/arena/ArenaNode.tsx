@@ -101,12 +101,7 @@ const ArenaNode: FC<ArenaNodeProps> = ({ data, selected }) => {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {status === "running" && (
-        <>
-          <div className="running-dashed-border" />
-          <div className="running-shimmer-bg" />
-        </>
-      )}
+      {status === "running" && <div className="running-shimmer-bg" />}
 
       {nodeType === "goal" && (
         <div className="absolute -top-5 left-0 text-[10px] font-bold text-foreground/60 uppercase tracking-wider">
